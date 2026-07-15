@@ -1,28 +1,7 @@
-# Python
 __pycache__/
 *.pyc
-*.pyo
-
-# Virtual environments
-.venv/
-venv/
-
-# Environment variables
 .env
-
-# Logs
+.airflow/
 logs/
-
-# Spark output
 data/processed/
-
-# Airflow
-airflow/logs/
-airflow/airflow.db
-
-# VS Code
-.vscode/
-
-# macOS / Windows
-.DS_Store
-Thumbs.db
+postgres_data/

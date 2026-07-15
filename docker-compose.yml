@@ -1,23 +1,82 @@
-version: "3.9"
-
 services:
+
   postgres:
     image: postgres:16
-
-    container_name: customer_postgres
+    container_name: enterprise_postgres
 
     restart: always
 
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: customer_platform
+      POSTGRES_DB: enterprise_dw
 
     ports:
       - "5432:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./warehouse:/docker-entrypoint-initdb.d
+
+  spark-master:
+    image: spark:3.5.0
+
+    container_name: spark-master
+
+    command: /opt/spark/sbin/start-master.sh
+
+    ports:
+      - "8888:8080"
+      - "7077:7077"
+
+    volumes:
+      - ./:/opt/project
+
+  spark-worker:
+    image: spark:3.5.0
+
+    container_name: spark-worker
+
+    depends_on:
+      - spark-master
+
+    command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
+
+    volumes:
+      - ./:/opt/project
+
+  airflow:
+    image: apache/airflow:2.10.0
+
+    container_name: airflow
+
+    depends_on:
+      - postgres
+
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+
+    ports:
+      - "8081:8080"
+
+    volumes:
+      - ./airflow:/opt/airflow
+
+  streamlit:
+    image: python:3.12
+
+    container_name: streamlit
+
+    working_dir: /app
+
+    command: tail -f /dev/null
+
+    ports:
+      - "8501:8501"
+
+    volumes:
+      - ./:/app
 
 volumes:
+
   postgres_data:
