@@ -1,0 +1,10 @@
+pandas
+pyspark
+sqlalchemy
+psycopg2-binary
+streamlit
+plotly
+apache-airflow
+python-dotenv
+pytest
+jupyter
