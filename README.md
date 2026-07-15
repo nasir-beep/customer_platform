@@ -1,20 +1,43 @@
-# Enterprise Retail Data Platform
+# Enterprise Data Engineering Capstone
 
-## Project Overview
+## Overview
 
-This project demonstrates an end-to-end data engineering pipeline using:
+This project demonstrates a complete end-to-end Data Engineering pipeline using modern industry tools.
 
+## Technologies
+
+- Python
 - Apache Spark
-- PostgreSQL
 - Apache Airflow
+- PostgreSQL
 - Docker
 - Streamlit
+- GitHub
+- Bash
 
-The pipeline processes four datasets:
+## Datasets
 
-- Customers
-- Products
+- CRM Customers
+- Product Catalog
 - Orders
 - Support Tickets
 
-The cleaned data is loaded into a PostgreSQL data warehouse and visualized using Streamlit.
+## Architecture
+
+Raw CSV
+
+↓
+
+Apache Spark
+
+↓
+
+PostgreSQL Warehouse
+
+↓
+
+Apache Airflow
+
+↓
+
+Streamlit Dashboard
