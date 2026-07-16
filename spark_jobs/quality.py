@@ -19,3 +19,12 @@ def count_rows(df):
     Return the number of rows.
     """
     return df.count()
+
+from pyspark.sql.functions import col
+
+def count_nulls(df, column_name):
+    return df.filter(col(column_name).isNull()).count()
+
+
+def count_duplicates(df):
+    return df.count() - df.dropDuplicates().count()
