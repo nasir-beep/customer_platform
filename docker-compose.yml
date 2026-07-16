@@ -48,6 +48,50 @@ services:
     networks:
       - enterprise_network
 
+  spark-master:
+    build:
+      context: .
+      dockerfile: docker/spark/Dockerfile
+
+    container_name: spark-master
+
+    hostname: spark-master
+
+    environment:
+      SPARK_MODE: master
+
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+
+    volumes:
+      - ./:/opt/project
+
+    networks:
+      - enterprise_network
+
+  spark-worker:
+    build:
+      context: .
+      dockerfile: docker/spark/Dockerfile
+
+    container_name: spark-worker
+
+    hostname: spark-worker
+
+    depends_on:
+      - spark-master
+
+    environment:
+      SPARK_MODE: worker
+      SPARK_MASTER_URL: spark://spark-master:7077
+
+    volumes:
+      - ./:/opt/project
+
+    networks:
+      - enterprise_network
+
 volumes:
   postgres_data:
 

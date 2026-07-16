@@ -1,13 +1,13 @@
-FROM bitnami/spark:3.5
+FROM python:3.11-slim
 
-USER root
+RUN apt-get update && apt-get install -y openjdk-21-jre-headless && rm -rf /var/lib/apt/lists/*
 
-RUN install_packages python3 python3-pip
+RUN pip install --no-cache-dir pyspark==3.5.1
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 WORKDIR /opt/project
 
-USER 1001
+CMD tail -f /dev/null
