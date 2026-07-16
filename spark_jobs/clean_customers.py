@@ -1,11 +1,18 @@
-from pyspark.sql.functions import col
-
 from config import RAW_DATA, PROCESSED_DATA
+from logger import get_logger
+from quality import (
+    remove_duplicates,
+    remove_null_ids,
+    count_rows,
+)
 from utils import create_spark_session
 
-spark = create_spark_session("Clean Customers")
+logger = get_logger("customers")
 
-# Read CSV
+spark = create_spark_session("Customer ETL")
+
+logger.info("Reading customer dataset...")
+
 df = (
     spark.read
     .option("header", True)
@@ -13,22 +20,14 @@ df = (
     .csv(str(RAW_DATA / "crm_50000_customers_dirty_v3.csv"))
 )
 
-print("\nSchema")
-df.printSchema()
+logger.info(f"Rows before cleaning: {count_rows(df)}")
 
-print("\nRow Count")
-print(df.count())
+df = remove_duplicates(df)
 
-print("\nFirst Records")
-df.show(5)
+df = remove_null_ids(df, "customer_id")
 
-# Remove duplicates
-df = df.dropDuplicates()
+logger.info(f"Rows after cleaning: {count_rows(df)}")
 
-# Remove rows without customer_id
-df = df.filter(col("customer_id").isNotNull())
-
-# Save cleaned data
 (
     df.write
     .mode("overwrite")
@@ -36,6 +35,6 @@ df = df.filter(col("customer_id").isNotNull())
     .csv(str(PROCESSED_DATA / "customers"))
 )
 
-print("Customer cleaning completed!")
+logger.info("Customer dataset cleaned successfully.")
 
 spark.stop()
