@@ -1,7 +1,25 @@
+# Python
 __pycache__/
 *.pyc
+
+# Virtual Environment
+.venv/
+venv/
+
+# Environment
 .env
-.airflow/
-logs/
+
+# Processed Data
 data/processed/
+
+# Airflow
+airflow/logs/
+
+# PostgreSQL
 postgres_data/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
