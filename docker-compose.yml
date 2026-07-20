@@ -1,12 +1,9 @@
-version: "3.9"
-
-name: enterprise-data-engineering
-
 services:
 
   postgres:
     image: postgres:16
     container_name: enterprise_postgres
+
     restart: unless-stopped
 
     environment:
@@ -21,79 +18,23 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./warehouse:/docker-entrypoint-initdb.d
 
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  pgadmin:
+    image: dpage/pgadmin4
 
-    networks:
-      - enterprise_network
-
-  redis:
-    image: redis:7-alpine
-    container_name: enterprise_redis
+    container_name: enterprise_pgadmin
 
     restart: unless-stopped
 
-    ports:
-      - "6379:6379"
-
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-    networks:
-      - enterprise_network
-
-  spark-master:
-    build:
-      context: .
-      dockerfile: docker/spark/Dockerfile
-
-    container_name: spark-master
-
-    hostname: spark-master
-
     environment:
-      SPARK_MODE: master
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
 
     ports:
-      - "7077:7077"
-      - "8080:8080"
-
-    volumes:
-      - ./:/opt/project
-
-    networks:
-      - enterprise_network
-
-  spark-worker:
-    build:
-      context: .
-      dockerfile: docker/spark/Dockerfile
-
-    container_name: spark-worker
-
-    hostname: spark-worker
+      - "5050:80"
 
     depends_on:
-      - spark-master
-
-    environment:
-      SPARK_MODE: worker
-      SPARK_MASTER_URL: spark://spark-master:7077
-
-    volumes:
-      - ./:/opt/project
-
-    networks:
-      - enterprise_network
+      - postgres
 
 volumes:
-  postgres_data:
 
-networks:
-  enterprise_network:
+  postgres_data:
