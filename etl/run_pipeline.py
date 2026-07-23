@@ -14,6 +14,20 @@ from transform import (
     clean_support,
 )
 
+from load import (
+    load_customers,
+    load_products,
+    load_dates,
+)
+
+print("=" * 60)
+print("Enterprise ETL Pipeline")
+print("=" * 60)
+
+load_customers()
+load_products()
+load_dates()
+
 OUTPUT = Path("data/processed")
 OUTPUT.mkdir(exist_ok=True)
 
@@ -71,3 +85,6 @@ for dataframe, cleaner, filename in datasets:
     print("-" * 50)
 
 print("ETL completed successfully.")
+
+print("=" * 60)
+print("Pipeline completed successfully!")
